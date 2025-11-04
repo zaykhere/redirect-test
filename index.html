@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const deepLink = "businessrocket://reset-password?token=abc123";
+
+      // Try opening the app
+      window.location.href = deepLink;
+
+      // Fallback: show web form if app isn't installed
+      const timeout = setTimeout(() => {
+        // setstate to true to show your web form
+        window.location.href = "http://google.com";
+      }, 1500);
+    </script>
+  </body>
+</html>
