@@ -3,32 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirect Test</title>
+    <title>Reset Password - Business Rocket</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        color: #111827;
+        text-align: center;
+      }
+      img.logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+      button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #1e40af;
+      }
+      p {
+        margin-top: 20px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+      a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
-    <h2>Reset your password</h2>
-    <p>If you have the app installed, click below:</p>
+    <img src="https://businessrocket.com/logo.png" alt="Business Rocket" class="logo" />
 
-    <button
-      id="openApp"
-      style="padding: 10px 20px; background: #26316c; color: white; border: none; border-radius: 5px;"
-    >
-      Open in App
-    </button>
+    <h2 id="title">Open in Business Rocket App</h2>
+    <button id="openApp">Open in App</button>
+
+    <p id="webFallback">or <a href="#">Continue on Web</a></p>
 
     <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
       const deepLink = "br-client-portal-app://reset-password?resetToken=abc123";
-      const fallback = "http://businessrocket-ui-dev.s3-website-us-west-1.amazonaws.com/create-password/ecebc784-4fec-4230-a0a8-a1ceefd27cbb";
+      const webUrl = `http://businessrocket-ui-dev.s3-website-us-west-1.amazonaws.com/create-password/${token}`;
 
-      document.getElementById("openApp").addEventListener("click", () => {
-        // Try to open app
-        window.location.href = deepLink;
+      const isMobile =
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (navigator.userAgent.includes("Mobile") &&
+          !navigator.userAgent.includes("Windows"));
 
-        // Fallback after short delay
-        setTimeout(() => {
-          window.location.href = fallback;
-        }, 1500);
-      });
+      const title = document.getElementById("title");
+      const button = document.getElementById("openApp");
+      const fallback = document.getElementById("webFallback").querySelector("a");
+
+      fallback.href = webUrl;
+
+      if (!isMobile) {
+        // 🚀 On desktop — just redirect to web version immediately
+        window.location.href = webUrl;
+      } else {
+        // 📱 On mobile — allow app deep link
+        button.onclick = () => {
+          window.location.href = deepLink;
+          setTimeout(() => {
+            window.location.href = webUrl;
+          }, 1500);
+        };
+      }
     </script>
   </body>
 </html>
